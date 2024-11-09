@@ -1,0 +1,4 @@
+vamos a tener la implementacion de cada uno de los servicios
+- manejo de request del cliente, dar un response al cliente, logica de negocio
+- Esta se comunica con la capa de repositorios (models)
+- En el caso de que necesitemos hacer consultas a la db, tenemos que utilizar los modelos

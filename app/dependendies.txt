@@ -1,0 +1,10 @@
+Lista de dependencias
+
+- express para construir nuestro servidos API
+- mongoose para conectar a la base de datos con mongodb, definir modelos, esquemas
+- cors para resolver problema de comunicacion con el frontend, origenes distintos
+- bcrypt para hashear las contrasenas
+- jsonwebtoken para manejar toda la autenticacion
+- dotenv para variables de ambiente (en lugar de dotenv pueden trabajar con variables de ambiente nativas de node, donde no es necesario dependencias externas)
+- 
+

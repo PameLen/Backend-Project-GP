@@ -1,0 +1,17 @@
+En esta carpeta o capa debemos definir los middlewares que vamos a usar en el proyecto
+1. Implementar un middleware de autenticacion (jwt, bearer token, validaciones)
+este middleware se transforma en informacion del usuario
+2. Implementar un middleware de autorizacion
+hay dos opciones:
+2.1. Resolver en un solo middleware todas las condiciones (columna de permisos)
+2.1.1. QUe el servicio este diponible solo para admin
+2.1.2. Que sea dueno de la cuenta: 
+primero necesito saber cual es el usuario que esta haciendo el request, lo obtengo del middleware de autenticacion
+luego comparo los ids, en el caso de hacer match le dejamos continuar, caso contrario 403
+
+*NOTA: si necesitan hacer alguna consulta a db, en el middleware pueden llamar a los modelos que necesiten
+
+3. Que el usuario sea dueno del flat => van a necesitar consultar informacion a la db
+dos opciones:
+Primero lo implementan todo dentro del mismo middleware de autorizacion
+segundo lo implementan en middlewares separados 1 validacion de admin, otro para validar dueno de la cuenta, otro para usuario dueno del flat
