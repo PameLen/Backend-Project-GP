@@ -7,3 +7,16 @@
 4. Podemos agregar un middleware global => cors
 5. El server se comunica con la capa de ruteo (routes)
 */
+import express from "express";
+import { connectDB } from "./db/db.js";
+import configs from "./configs/configs.js";
+
+const app = express();
+
+//middleware para procesar json
+app.use(express.json());
+
+connectDB();
+app.listen(configs.PORT, () => {
+  console.log(`Servidor iniciado en el puerto ${configs.PORT} `);
+});
