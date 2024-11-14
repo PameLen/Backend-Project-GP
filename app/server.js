@@ -21,8 +21,7 @@ connectDB();
 //EndPoints para servicios users
 
 //EndPoints para servicios flats
-app.use("/getAllFlats", flatsRoutes);
-app.use("/addFlat", flatsRoutes);
+app.use("/flats", flatsRoutes);
 
 app.listen(configs.PORT, () => {
   console.log(`Servidor iniciado en el puerto ${configs.PORT} `);

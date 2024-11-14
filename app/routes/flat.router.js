@@ -11,7 +11,7 @@ getFlatById /flats/:id GET
 import express from "express";
 import { getAllFlats, addFlat } from "../controllers/flat.controller.js";
 const router = express.Router();
-router.get("/", getAllFlats);
-router.post("/", addFlat);
+router.get("/getAllFlats", getAllFlats);
+router.post("/addFlats", addFlat);
 
 export default router;
