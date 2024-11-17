@@ -9,9 +9,14 @@ función ruta método http permisos
 getFlatById /flats/:id GET
 */
 import express from "express";
-import { getAllFlats, addFlat } from "../controllers/flat.controller.js";
+import {
+  getAllFlats,
+  addFlat,
+  getFlatById,
+} from "../controllers/flat.controller.js";
 const router = express.Router();
 router.get("/getAllFlats", getAllFlats);
 router.post("/addFlats", addFlat);
+router.get("/getFlatById/:id", getFlatById);
 
 export default router;
