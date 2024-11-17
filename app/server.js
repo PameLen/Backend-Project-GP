@@ -10,6 +10,7 @@
 import express from "express";
 import { connectDB } from "./db/db.js";
 import configs from "./configs/configs.js";
+import flatsRoutes from "./routes/flat.router.js";
 
 const app = express();
 
@@ -17,6 +18,11 @@ const app = express();
 app.use(express.json());
 
 connectDB();
+//EndPoints para servicios users
+
+//EndPoints para servicios flats
+app.use("/flats", flatsRoutes);
+
 app.listen(configs.PORT, () => {
   console.log(`Servidor iniciado en el puerto ${configs.PORT} `);
 });
