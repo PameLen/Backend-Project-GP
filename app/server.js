@@ -11,6 +11,7 @@ import express from "express";
 import { connectDB } from "./db/db.js";
 import configs from "./configs/configs.js";
 import flatsRoutes from "./routes/flat.router.js";
+import usersRoutes from "./routes/user.router.js";
 
 const app = express();
 
@@ -18,9 +19,9 @@ const app = express();
 app.use(express.json());
 
 connectDB();
-//EndPoints para servicios users
-
-//EndPoints para servicios flats
+//EndPoint para servicios users
+app.use("/users", usersRoutes);
+//EndPoint para servicios flats
 app.use("/flats", flatsRoutes);
 
 app.listen(configs.PORT, () => {

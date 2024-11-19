@@ -13,10 +13,12 @@ import {
   getAllFlats,
   addFlat,
   getFlatById,
+  updateFlat,
 } from "../controllers/flat.controller.js";
 const router = express.Router();
 router.get("/getAllFlats", getAllFlats);
 router.post("/addFlats", addFlat);
+router.patch("/updateFlat/:id", updateFlat);
 router.get("/getFlatById/:id", getFlatById);
 
 export default router;

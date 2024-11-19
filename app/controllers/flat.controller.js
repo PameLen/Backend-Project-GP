@@ -24,9 +24,14 @@ const addFlat = async (req, res) => {
 //controllador para que el propietaro actualizar un nuevo flats
 const updateFlat = async (req, res) => {
   try {
-    const flat = new Flat(req.body);
-    await flat.save();
-    res.status(201).send(flat);
+    const flat = await Flat.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+
+    if (!flat) {
+      return res.status(404).send({ message: "Product not found" });
+    }
+    res.json(flat);
   } catch (error) {
     res.status(400).send(error);
   }
@@ -45,4 +50,4 @@ const getFlatById = async (req, res) => {
     res.status(500).json({ message: "Error retrieving flat", error });
   }
 };
-export { getAllFlats, addFlat, getFlatById };
+export { getAllFlats, addFlat, updateFlat, getFlatById };
