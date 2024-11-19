@@ -26,6 +26,7 @@ const updateFlat = async (req, res) => {
   try {
     const flat = await Flat.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
+      runValidators: true,
     });
 
     if (!flat) {
