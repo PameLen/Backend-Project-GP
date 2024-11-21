@@ -51,4 +51,17 @@ const getFlatById = async (req, res) => {
     res.status(500).json({ message: "Error retrieving flat", error });
   }
 };
-export { getAllFlats, addFlat, updateFlat, getFlatById };
+
+//controlador para eliminar un flat
+const deleteFlat = async (req, res) => {
+  try {
+    const flat = await Flat.findByIdAndDelete(req.params.id);
+    if (!flat) {
+      return res.status(404).send({ message: "Flat not found" });
+    }
+    res.json({ message: "Flat deleted" });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+export { getAllFlats, addFlat, updateFlat, getFlatById, deleteFlat };

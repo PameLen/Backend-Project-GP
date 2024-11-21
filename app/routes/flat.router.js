@@ -14,11 +14,13 @@ import {
   addFlat,
   getFlatById,
   updateFlat,
+  deleteFlat,
 } from "../controllers/flat.controller.js";
 const router = express.Router();
 router.get("/getAllFlats", getAllFlats);
-router.post("/addFlats", addFlat);
+router.post("/addFlat", addFlat);
 router.patch("/updateFlat/:id", updateFlat);
 router.get("/getFlatById/:id", getFlatById);
+router.delete("/deletedFlat/:id", deleteFlat);
 
 export default router;
