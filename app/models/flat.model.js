@@ -44,6 +44,7 @@ const flatSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
+  //versionKey: false,
 });
 
 export const Flat = mongoose.model("Flats", flatSchema);
