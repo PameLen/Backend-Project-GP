@@ -12,6 +12,7 @@ import { connectDB } from "./db/db.js";
 import configs from "./configs/configs.js";
 import flatsRoutes from "./routes/flat.router.js";
 import usersRoutes from "./routes/user.router.js";
+import authRoutes from "./routes/auth.router.js";
 
 const app = express();
 
@@ -19,6 +20,9 @@ const app = express();
 app.use(express.json());
 
 connectDB();
+//EndPoints para servicios register y login
+app.use("/users", authRoutes);
+
 //EndPoint para servicios users
 app.use("/users", usersRoutes);
 //EndPoint para servicios flats

@@ -9,19 +9,21 @@ deleteUser /users/:id DELETE admin/accountowner
 
 import express from "express";
 import {
-  saveUser,
   getAllUsers,
   getUserById,
   updateUser,
   deleteUser,
 } from "../controllers/user.controller.js";
+//import { register } from "../controllers/auth.controller.js";
 
 const router = express.Router();
 
-router.post("/", saveUser);
+//router.post("/register", register);
+//router.post("/login", login);
+
 router.get("/getAllUsers", getAllUsers);
-router.get("/:id", getUserById);
-router.patch("/:id", updateUser);
-router.delete("/:id", deleteUser);
+router.get("/getUserById/:id", getUserById);
+router.patch("/updateUser/", updateUser);
+router.delete("/deleteUse/:id", deleteUser);
 
 export default router;

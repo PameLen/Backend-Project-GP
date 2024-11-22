@@ -9,6 +9,7 @@
 //500 - Internal Server Error cuando ocurre un error en el servidor
 //400 - Bad Request cuando hay un error en el request
 // Siempre registrar un evento de error cada vez que ingresen al catch (loggers)
+
 import { User } from "../models/user.model.js";
 
 const saveUser = async (req, res) => {
