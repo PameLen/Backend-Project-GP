@@ -13,7 +13,7 @@ import userRoutes from "./routes/user.router.js";
 import authRoutes from "./routes/auth.router.js";
 
 import configs from "./configs/configs.js";
-import cors from "cors";
+import flatsRoutes from "./routes/flat.router.js";
 
 const app = express();
 
@@ -22,9 +22,10 @@ app.use(express.json());
 app.use(cors());
 
 connectDB();
+//EndPoints para servicios users
 
-app.use("/users", userRoutes);
-app.use("/auth", authRoutes);
+//EndPoints para servicios flats
+app.use("/flats", flatsRoutes);
 
 app.listen(configs.PORT, () => {
   console.log(`Servidor iniciado en el puerto ${configs.PORT} `);
