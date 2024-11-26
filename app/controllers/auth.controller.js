@@ -40,11 +40,11 @@ const login = async (req, res) => {
         expiresIn: "1h",
       }
     );
-    console.log("Generated JWT Token:", token);
+    //console.log("Generated JWT Token:", token);
 
     res.status(200).json({ token });
   } catch (error) {
-    console.error("Error during login:", error.message);
+    //console.error("Error during login:", error.message);
     res.status(500).json({ message: error.message });
   }
 };

@@ -1,4 +1,3 @@
-/*
 import jwt from "jsonwebtoken";
 import config from "../configs/config.js";
 
@@ -30,4 +29,3 @@ const authenticationMiddleware = (req, res, next) => {
 };
 
 export default authenticationMiddleware;
-*/

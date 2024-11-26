@@ -16,10 +16,12 @@ import {
   updateFlat,
   deleteFlat,
 } from "../controllers/flat.controller.js";
+import authenticationMiddleware from "../middlewares/authentication.middleware.js";
+
 const router = express.Router();
 router.get("/getAllFlats", getAllFlats);
 router.post("/addFlat", addFlat);
-router.patch("/updateFlat/:id", updateFlat);
+router.patch("/updateFlat/:id", authenticationMiddleware, updateFlat);
 router.get("/getFlatById/:id", getFlatById);
 router.delete("/deletedFlat/:id", deleteFlat);
 
