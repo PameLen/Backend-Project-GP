@@ -1,5 +1,5 @@
 //Vamos a recibir como parametro los roles que pueden acceder a un servicio
-/*const authorizationMiddleware = (roles) => {
+const authorizationMiddleware = (roles) => {
   return (req, res, next) => {
     //Debemos obtener el rol del usuario que esta haciendo el request
     const userRole = req.user.role;
@@ -13,4 +13,4 @@
   };
 };
 
-export default authorizationMiddleware;*/
+export default authorizationMiddleware;
