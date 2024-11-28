@@ -22,12 +22,7 @@ import authorizationMiddleware from "../middlewares/authorization.middleware.js"
 const router = express.Router();
 router.get("/getAllFlats", getAllFlats);
 router.post("/addFlat", addFlat);
-router.patch(
-  "/updateFlat/:id",
-  authenticationMiddleware,
-  authorizationMiddleware(["admin"]),
-  updateFlat
-);
+router.patch("/updateFlat/:id", authenticationMiddleware, updateFlat);
 router.get("/getFlatById/:id", getFlatById);
 router.delete("/deletedFlat/:id", deleteFlat);
 

@@ -45,12 +45,6 @@ const userSchema = new mongoose.Schema({
       ref: "flat",
     },
   ],
-
-  role: {
-    type: String,
-    enum: ["admin", "user", "owner"],
-    default: "user",
-  },
 });
 
 //El proyecto dice que hagan un borrado fisico, es recomedable hacer un borrado logico
