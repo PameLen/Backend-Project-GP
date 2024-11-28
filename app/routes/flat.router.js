@@ -17,6 +17,7 @@ import {
   deleteFlat,
 } from "../controllers/flat.controller.js";
 import authenticationMiddleware from "../middlewares/authentication.middleware.js";
+import authorizationMiddleware from "../middlewares/authorization.middleware.js";
 
 const router = express.Router();
 router.get("/getAllFlats", getAllFlats);

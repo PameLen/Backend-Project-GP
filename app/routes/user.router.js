@@ -14,6 +14,8 @@ import {
   updateUser,
   deleteUser,
 } from "../controllers/user.controller.js";
+import authenticationMiddleware from "../middlewares/authentication.middleware.js";
+import authorizationMiddleware from "../middlewares/authorization.middleware.js";
 //import { register } from "../controllers/auth.controller.js";
 
 const router = express.Router();
@@ -23,7 +25,12 @@ const router = express.Router();
 
 router.get("/getAllUsers", getAllUsers);
 router.get("/getUserById/:id", getUserById);
-router.patch("/updateUser/:id", updateUser);
+router.patch(
+  "/updateUser/:id",
+  authenticationMiddleware,
+  authorizationMiddleware(true),
+  updateUser
+);
 router.delete("/deleteUser/:id", deleteUser);
 
 export default router;
