@@ -9,7 +9,10 @@
 */
 import express from "express";
 import { connectDB } from "./db/db.js";
-import configs from "./configs/configs.js";
+import config from "./configs/config.js";
+import flatsRoutes from "./routes/flat.router.js";
+import usersRoutes from "./routes/user.router.js";
+import authRoutes from "./routes/auth.router.js";
 
 const app = express();
 
@@ -17,6 +20,14 @@ const app = express();
 app.use(express.json());
 
 connectDB();
-app.listen(configs.PORT, () => {
-  console.log(`Servidor iniciado en el puerto ${configs.PORT} `);
+
+//EndPoints para servicios register y login
+app.use("/users", authRoutes);
+//EndPoint para servicios users
+app.use("/users", usersRoutes);
+//EndPoint para servicios flats
+app.use("/flats", flatsRoutes);
+
+app.listen(config.PORT, () => {
+  console.log(`Servidor iniciado en el puerto ${config.PORT} `);
 });
