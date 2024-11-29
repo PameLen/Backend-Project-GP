@@ -30,7 +30,7 @@ const updateFlat = async (req, res) => {
     });
 
     if (!flat) {
-      return res.status(404).send({ message: "Product not found" });
+      return res.status(404).send({ message: "Flat no encontrado" });
     }
     res.json(flat);
   } catch (error) {
@@ -44,7 +44,7 @@ const getFlatById = async (req, res) => {
     const { id } = req.params;
     const flat = await Flat.findById(id);
     if (!flat) {
-      return res.status(404).json({ message: "Flat not found" });
+      return res.status(404).json({ message: "Flat no encontrado" });
     }
     res.json(flat);
   } catch (error) {
@@ -57,9 +57,9 @@ const deleteFlat = async (req, res) => {
   try {
     const flat = await Flat.findByIdAndDelete(req.params.id);
     if (!flat) {
-      return res.status(404).send({ message: "Flat not found" });
+      return res.status(404).send({ message: "Flat no encontrado" });
     }
-    res.json({ message: "Flat deleted" });
+    res.json({ message: "Flat eliminado" });
   } catch (error) {
     res.status(500).send(error);
   }

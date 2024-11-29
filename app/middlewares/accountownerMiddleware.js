@@ -1,5 +1,3 @@
-//Vamos a recibir como parametro los roles que pueden acceder a un servicio
-
 const validateUserOrAdmin = (req, res, next) => {
   try {
     const userIdFromToken = req.user?.user_id; // ID del usuario del token
@@ -9,14 +7,14 @@ const validateUserOrAdmin = (req, res, next) => {
     if (userIdFromToken !== userIdFromParams && !req.user.isAdmin) {
       return res.status(403).json({
         message:
-          "Access denied: You can only edit your own profile or be an admin.",
+          "Accesso denegado. Solo puedes editar o eliminar tu propio perfil o si eres administrador ",
       });
     }
 
     // Si es dueño o administrador, continuar
     next();
   } catch (error) {
-    res.status(500).json({ message: "Error while validating access" });
+    res.status(500).json({ message: "Error al validar el acceso" });
   }
 };
 

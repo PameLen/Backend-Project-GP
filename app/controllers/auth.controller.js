@@ -23,13 +23,13 @@ const login = async (req, res) => {
     //2.- Vamos a buscar el usuario en la BDD, si no existe vamos a retornar un 404
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "Usuario no encontrado" });
     }
     //3.- Vamos a comparar la contraseña que viene en el request con la contraseña hasheada que tenemos en la BDD
     const passwordsMatch = await user.comparePasswords(password);
     //4.- Si las contraseñas no coinciden, vamos a retornar un 401
     if (!passwordsMatch) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(401).json({ message: "Credenciales Invalidas" });
     }
     //5.- Si las contraseñas coinciden, vamos a generar un token JWT y lo vamos a retornar en la respuesta
 

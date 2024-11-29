@@ -68,6 +68,7 @@ const deleteUser = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
+    res.json({ message: "Usuario emininado" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
