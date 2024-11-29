@@ -77,18 +77,7 @@ const getFlatById = async (req, res) => {
 };
 
 //controlador para eliminar un flat
-/*
-const deleteFlat = async (req, res) => {
-  try {
-    const flat = await Flat.findByIdAndDelete(req.params.id);
-    if (!flat) {
-      return res.status(404).send({ message: "Flat no encontrado" });
-    }
-    res.json({ message: "Flat eliminado" });
-  } catch (error) {
-    res.status(500).send(error);
-  }
-};*/
+
 const deleteFlat = async (req, res) => {
   try {
     // Obtener el flat de la base de datos
@@ -100,11 +89,9 @@ const deleteFlat = async (req, res) => {
 
     // Validar si el usuario logueado es el dueño del flat
     if (flat.ownerId.toString() !== req.user.user_id) {
-      return res
-        .status(403)
-        .json({
-          message: "Access denied: Solo el dueño puede eliminar este flat.",
-        });
+      return res.status(403).json({
+        message: "Access denied: Solo el dueño puede eliminar este flat.",
+      });
     }
 
     // Eliminar el flat si el usuario es el dueño

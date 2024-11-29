@@ -48,7 +48,7 @@ const userSchema = new mongoose.Schema({
 });
 
 //El proyecto dice que hagan un borrado fisico, es recomedable hacer un borrado logico
-//Vamos a aplicar un pre hook (proceso que se va a ejecutar antes de alamacenar el usuario en BDD)
+
 //El primer parametro de nuestro pre hook, es la operacion a la cual vamos a aplicar el hook
 userSchema.pre("save", async function (next) {
   const users = this; //this -> es el objeto que estamos guardando en BDD
@@ -60,7 +60,7 @@ userSchema.pre("save", async function (next) {
       const salt = await bcrypt.genSalt(10);
 
       //Segundo paso, es hashear la contraseña
-      // 1234 -> $%$JKSDJFHHJKASDWRW1234
+
       const hash = await bcrypt.hash(users.password, salt);
 
       //Tercer paso, es asignar la contraseña hasheada al atributo password

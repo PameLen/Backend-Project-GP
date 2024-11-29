@@ -16,12 +16,8 @@ import {
 } from "../controllers/user.controller.js";
 import authenticationMiddleware from "../middlewares/authentication.middleware.js";
 import validateUserOrAdmin from "../middlewares/accountownerMiddleware.js";
-//import { register } from "../controllers/auth.controller.js";
 
 const router = express.Router();
-
-//router.post("/register", register);
-//router.post("/login", login);
 
 router.get("/getAllUsers", getAllUsers);
 router.get("/getUserById/:id", getUserById);
