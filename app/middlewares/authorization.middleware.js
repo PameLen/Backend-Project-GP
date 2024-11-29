@@ -1,6 +1,6 @@
 //Vamos a recibir como parametro los roles que pueden acceder a un servicio
-
-const validateUserOrAdmin = (req, res, next) => {
+/*
+const validateUserOrAdminA = (req, res, next) => {
   try {
     const userIdFromToken = req.user?.user_id; // ID del usuario del token
     const userIdFromParams = req.params.id; // ID del parámetro en la URL
@@ -20,4 +20,5 @@ const validateUserOrAdmin = (req, res, next) => {
   }
 };
 
-export default validateUserOrAdmin;
+export default validateUserOrAdminA;
+*/

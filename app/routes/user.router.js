@@ -15,7 +15,7 @@ import {
   deleteUser,
 } from "../controllers/user.controller.js";
 import authenticationMiddleware from "../middlewares/authentication.middleware.js";
-import validateUserId from "../middlewares/accountownerMiddleware.js";
+import validateUserOrAdmin from "../middlewares/accountownerMiddleware.js";
 //import { register } from "../controllers/auth.controller.js";
 
 const router = express.Router();
@@ -28,13 +28,13 @@ router.get("/getUserById/:id", getUserById);
 router.patch(
   "/updateUser/:id",
   authenticationMiddleware,
-  validateUserId,
+  validateUserOrAdmin,
   updateUser
 );
 router.delete(
   "/deleteUser/:id",
   authenticationMiddleware,
-  validateUserId,
+  validateUserOrAdmin,
   deleteUser
 );
 

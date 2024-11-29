@@ -7,7 +7,7 @@ const validateUserOrAdmin = (req, res, next) => {
     if (userIdFromToken !== userIdFromParams && !req.user.isAdmin) {
       return res.status(403).json({
         message:
-          "Accesso denegado. Solo puedes editar o eliminar tu propio perfil o si eres administrador ",
+          "Accesso denegado. Solo puedes editar/eliminar tu propio perfil o si eres administrador ",
       });
     }
 
