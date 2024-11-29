@@ -43,7 +43,19 @@ const flatSchema = new mongoose.Schema({
   ownerId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
+    required: true,
   },
+
+  users: [
+    {
+      flat: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+      },
+      //añadir name
+    },
+  ],
   //versionKey: false,
 });
 

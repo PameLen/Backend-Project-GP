@@ -13,28 +13,52 @@ const getAllFlats = async (req, res) => {
 //controllador para que el propietaro cree un nuevo flats
 const addFlat = async (req, res) => {
   try {
-    const flat = new Flat(req.body);
-    await flat.save();
-    res.status(201).send(flat);
+    // Obtenemos el ID del propietario del token (rellenado por el middleware de autenticación)
+    const ownerId = req.user?.user_id;
+
+    if (!ownerId) {
+      return res.status(401).send({ message: "User not authenticated" });
+    }
+
+    // Creamos un nuevo flat con el campo ownerId incluido
+    const flat = new Flat({
+      ...req.body, // Los datos enviados en el cuerpo de la solicitud
+      ownerId, // El ID del propietario obtenido del token
+    });
+
+    await flat.save(); // Guardamos el flat en la base de datos
+    res.status(201).send(flat); // Enviamos la respuesta al cliente
   } catch (error) {
-    res.status(400).send(error);
+    res.status(400).send({ message: error.message });
   }
 };
 
 //controllador para que el propietaro actualizar un nuevo flats
 const updateFlat = async (req, res) => {
   try {
-    const flat = await Flat.findByIdAndUpdate(req.params.id, req.body, {
+    // Obtener el flat de la base de datos
+    const flat = await Flat.findById(req.params.id);
+
+    if (!flat) {
+      return res.status(404).json({ message: "Flat no encontrado" });
+    }
+
+    // Validar si el usuario logueado es el dueño del flat
+    if (flat.ownerId.toString() !== req.user.user_id) {
+      return res.status(403).json({
+        message: "Access denied: Solo el dueño puede actualizar este flat.",
+      });
+    }
+
+    // Actualizar el flat si el usuario es el dueño
+    const updatedFlat = await Flat.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
     });
 
-    if (!flat) {
-      return res.status(404).send({ message: "Flat no encontrado" });
-    }
-    res.json(flat);
+    res.status(200).json(updatedFlat);
   } catch (error) {
-    res.status(400).send(error);
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -53,6 +77,7 @@ const getFlatById = async (req, res) => {
 };
 
 //controlador para eliminar un flat
+/*
 const deleteFlat = async (req, res) => {
   try {
     const flat = await Flat.findByIdAndDelete(req.params.id);
@@ -62,6 +87,32 @@ const deleteFlat = async (req, res) => {
     res.json({ message: "Flat eliminado" });
   } catch (error) {
     res.status(500).send(error);
+  }
+};*/
+const deleteFlat = async (req, res) => {
+  try {
+    // Obtener el flat de la base de datos
+    const flat = await Flat.findById(req.params.id);
+
+    if (!flat) {
+      return res.status(404).json({ message: "Flat no encontrado" });
+    }
+
+    // Validar si el usuario logueado es el dueño del flat
+    if (flat.ownerId.toString() !== req.user.user_id) {
+      return res
+        .status(403)
+        .json({
+          message: "Access denied: Solo el dueño puede eliminar este flat.",
+        });
+    }
+
+    // Eliminar el flat si el usuario es el dueño
+    await Flat.findByIdAndDelete(req.params.id);
+
+    res.status(200).json({ message: "Flat eliminado" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 export { getAllFlats, addFlat, updateFlat, getFlatById, deleteFlat };

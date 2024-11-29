@@ -20,9 +20,9 @@ import authenticationMiddleware from "../middlewares/authentication.middleware.j
 
 const router = express.Router();
 router.get("/getAllFlats", getAllFlats);
-router.post("/addFlat", addFlat);
+router.post("/addFlat", authenticationMiddleware, addFlat);
 router.patch("/updateFlat/:id", authenticationMiddleware, updateFlat);
 router.get("/getFlatById/:id", getFlatById);
-router.delete("/deletedFlat/:id", deleteFlat);
+router.delete("/deletedFlat/:id", authenticationMiddleware, deleteFlat);
 
 export default router;
