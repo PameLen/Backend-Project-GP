@@ -30,6 +30,7 @@ router.patch("/updateFlat/:id", authenticationMiddleware, updateFlat);
 router.get("/getFlatById/:id", getFlatById);
 router.delete("/deletedFlat/:id", authenticationMiddleware, deleteFlat);
 
+/*
 router.post("/:id/messages", authenticationMiddleware, addMessage);
 router.get(
   "/:id/messages/:senderId",
@@ -37,5 +38,5 @@ router.get(
   getUserMessages
 );
 router.get("/:id/messages", authenticationMiddleware, getAllMessages);
-
+*/
 export default router;

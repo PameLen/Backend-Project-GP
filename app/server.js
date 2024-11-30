@@ -12,8 +12,8 @@ import { connectDB } from "./db/db.js";
 import config from "./configs/config.js";
 import flatsRoutes from "./routes/flat.router.js";
 import usersRoutes from "./routes/user.router.js";
-
 import authRoutes from "./routes/auth.router.js";
+import messageRoutes from "./routes/message.router.js";
 
 const app = express();
 
@@ -28,6 +28,8 @@ app.use("/users", authRoutes);
 app.use("/users", usersRoutes);
 //EndPoint para servicios flats
 app.use("/flats", flatsRoutes);
+//EndPoint para messages
+app.use("/flats", messageRoutes);
 
 app.listen(config.PORT, () => {
   console.log(`Servidor iniciado en el puerto ${config.PORT} `);

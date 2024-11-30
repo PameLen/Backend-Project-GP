@@ -18,5 +18,12 @@ const router = express.Router();
 //router.get("/flats/:id/messages", getAllMessages);
 //router.get("/flats/:id/messages/:senderId", getUserMessages);
 //router.post("/flats/:id/messages", addMessage);
+router.post("/:id/messages", authenticationMiddleware, addMessage);
+router.get(
+  "/:id/messages/:senderId",
+  authenticationMiddleware,
+  getUserMessages
+);
+router.get("/:id/messages", authenticationMiddleware, getAllMessages);
 
 export default router;
