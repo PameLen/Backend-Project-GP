@@ -12,6 +12,7 @@ import { connectDB } from "./db/db.js";
 import config from "./configs/config.js";
 import flatsRoutes from "./routes/flat.router.js";
 import usersRoutes from "./routes/user.router.js";
+
 import authRoutes from "./routes/auth.router.js";
 
 const app = express();
