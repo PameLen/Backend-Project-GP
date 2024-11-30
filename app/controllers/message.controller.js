@@ -1,6 +1,6 @@
 import { Message } from "../models/message.model.js";
 import { Flat } from "../models/flat.model.js";
-
+import { User } from "../models/user.model.js";
 //Controlador para consultar los mensaje de un user, se valida con el token id del login solo si es igual a senderId
 const getUserMessages = async (req, res) => {
   try {
@@ -69,52 +69,58 @@ const getAllMessages = async (req, res) => {
 //controlador para que el usuario loguedo ingrese un mensjae a un flat que se ingresa en la ruta
 const addMessage = async (req, res) => {
   try {
-    // Obtener el ID del flat desde los parámetros de la ruta
+    // Obtener el id del flat desde los parámetros
     const { id: flatId } = req.params;
+
+    // Obtener el id del usuario logueado desde el token
+    const userId = req.user.user_id;
 
     // Obtener el contenido del mensaje desde el cuerpo de la solicitud
     const { content } = req.body;
 
-    // Obtener el ID del usuario logueado desde el token
-    const senderId = req.user.user_id;
-
-    // Validar que el contenido del mensaje exista
-    if (!content) {
-      return res
-        .status(400)
-        .json({ message: "El contenido del mensaje es requerido." });
+    // Validar que el flat existe
+    const flat = await Flat.findById(flatId);
+    if (!flat) {
+      return res.status(404).json({ message: "Flat no encontrado" });
     }
 
-    // Crear el mensaje en la base de datos
+    // Crear el mensaje en la base de datos con flatId
     const message = new Message({
-      senderId,
-      flatId,
+      senderId: userId,
+      flatId, // Asociamos el ID del flat al mensaje
       content,
     });
     await message.save();
 
-    // Buscar el flat en la base de datos
-    const flat = await Flat.findById(flatId);
-
-    // Validar si el flat existe
-    if (!flat) {
-      return res.status(404).json({ message: "Flat no encontrado." });
-    }
-
     // Asociar el mensaje al flat
-    if (!flat.messages) {
-      flat.messages = []; // Inicializar el array si está undefined
-    }
     flat.messages.push(message._id);
-
-    // Guardar el flat con la referencia al mensaje
     await flat.save();
 
-    // Responder con éxito
-    res.status(201).json({ message: "Mensaje agregado correctamente." });
+    // Obtener el email del usuario logueado
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    // Construir la respuesta
+    const response = {
+      message: "Mensaje agregado",
+      email: user.email,
+      flatDetails: {
+        city: flat.city,
+        streetName: flat.streetName,
+        streetNumber: flat.streetNumber,
+      },
+      messageDetails: {
+        content: message.content,
+        createdAt: message.createdAt,
+      },
+    };
+
+    // Enviar la respuesta
+    res.status(201).json(response);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
-
 export { getUserMessages, getAllMessages, addMessage };
