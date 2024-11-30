@@ -17,6 +17,11 @@ import {
   deleteFlat,
 } from "../controllers/flat.controller.js";
 import authenticationMiddleware from "../middlewares/authentication.middleware.js";
+import {
+  addMessage,
+  getAllMessages,
+  getUserMessages,
+} from "../controllers/message.controller.js";
 
 const router = express.Router();
 router.get("/getAllFlats", getAllFlats);
@@ -24,5 +29,13 @@ router.post("/addFlat", authenticationMiddleware, addFlat);
 router.patch("/updateFlat/:id", authenticationMiddleware, updateFlat);
 router.get("/getFlatById/:id", getFlatById);
 router.delete("/deletedFlat/:id", authenticationMiddleware, deleteFlat);
+
+router.post("/:id/messages", authenticationMiddleware, addMessage);
+router.get(
+  "/:id/messages/:senderId",
+  authenticationMiddleware,
+  getUserMessages
+);
+router.get("/:id/messages", authenticationMiddleware, getAllMessages);
 
 export default router;

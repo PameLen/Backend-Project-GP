@@ -56,6 +56,13 @@ const flatSchema = new mongoose.Schema({
       //añadir name
     },
   ],
+
+  messages: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Message",
+    },
+  ],
   //versionKey: false,
 });
 
