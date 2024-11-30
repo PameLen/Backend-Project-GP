@@ -53,7 +53,6 @@ const flatSchema = new mongoose.Schema({
         ref: "User",
         required: true,
       },
-      //añadir name
     },
   ],
 
@@ -66,4 +65,4 @@ const flatSchema = new mongoose.Schema({
   //versionKey: false,
 });
 
-export const Flat = mongoose.model("Flats", flatSchema);
+export const Flat = mongoose.model("Flat", flatSchema);

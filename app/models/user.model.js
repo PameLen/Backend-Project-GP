@@ -42,7 +42,7 @@ const userSchema = new mongoose.Schema({
   favouritesFlats: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "flat",
+      ref: "Flat",
     },
   ],
 });

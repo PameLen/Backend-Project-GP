@@ -66,11 +66,35 @@ const updateFlat = async (req, res) => {
 const getFlatById = async (req, res) => {
   try {
     const { id } = req.params;
-    const flat = await Flat.findById(id);
+
+    // Buscar el flat y poblar los detalles del ownerId
+    const flat = await Flat.findById(id).populate({
+      path: "ownerId",
+      select: "email", // Solo selecciona el campo email del propietario
+    });
+
     if (!flat) {
       return res.status(404).json({ message: "Flat no encontrado" });
     }
-    res.json(flat);
+
+    // Construir la respuesta con los detalles del flat y el email del propietario
+    const response = {
+      flatDetails: {
+        city: flat.city,
+        streetName: flat.streetName,
+        streetNumber: flat.streetNumber,
+        areaSize: flat.areaSize,
+        hasAc: flat.hasAc,
+        yearBuilt: flat.yearBuilt,
+        rentPrice: flat.rentPrice,
+        dateAvailable: flat.dateAvailable,
+        created: flat.created,
+        updated: flat.updated,
+      },
+      ownerEmail: flat.ownerId.email,
+    };
+
+    res.json(response);
   } catch (error) {
     res.status(500).json({ message: "Error retrieving flat", error });
   }
