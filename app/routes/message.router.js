@@ -13,10 +13,11 @@ import {
   addMessage,
 } from "../controllers/message.controller.js";
 import authenticationMiddleware from "../middlewares/authentication.middleware.js";
+import authorizationMiddleware from "../middlewares/authorization.middleware.js";
 
 const router = express.Router();
-router.get("/flats/:id/messages", getAllMessages);
-router.get("/flats/:id/messages/:senderId", getUserMessages);
-router.post("/flats/:id/messages", addMessage);
+router.get("/flats/:id", getAllMessages);
+router.get("/flats/:id:senderId", getUserMessages);
+router.post("/flats/:id/messages", authorizationMiddleware, addMessage);
 
 export default router;
