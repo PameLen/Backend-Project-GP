@@ -1,0 +1,196 @@
+openapi: 3.0.0
+info:
+  title: Flat Management API
+  description: API para la gestión de flats
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+  security:
+  - bearerAuth: []
+
+components:
+  schemas:
+    User:
+      type: object
+      required:
+        - email
+        - password
+        - firstname
+        - lastname
+      properties:
+        email:
+          type: string
+          format: email
+          description: The user's email address.
+        password:
+          type: string
+          minLength:
+          description: The user's password.
+    Flat:
+      type: object
+      required:
+        - city
+        - streetName
+        - streetNumber
+        - areaSize
+        - ownerId
+      properties:
+        id:
+          type: string
+          description: ID único del flat
+        city:
+          type: string
+          description: Ciudad donde se ubica el flat
+        streetName:
+          type: string
+          description: Nombre de la calle
+        streetNumber:
+          type: string
+          description: Número de la calle
+        areaSize:
+          type: number
+          description: Tamaño del flat en metros cuadrados
+        hasAc:
+          type: boolean
+          description: Indica si el flat tiene aire acondicionado
+          default: false
+        yearBuilt:
+          type: number
+          description: Año de construcción
+        rentPrice:
+          type: number
+          description: Precio mensual de alquiler
+        dateAvailable:
+          type: string
+          format: date
+          description: Fecha de disponibilidad
+        created:
+          type: string
+          format: date
+          description: Fecha de creación
+        updated:
+          type: string
+          format: date
+          description: Fecha de última actualización
+        ownerId:
+          type: string
+          description: ID del propietario
+      example:
+        city: "Quito"
+        streetName: "Av. 6 de Diciembre"
+        streetNumber: "45"
+        areaSize: 90
+        hasAc: false
+        yearBuilt: 2022
+        rentPrice: 600
+        dateAvailable: "2024-05-05"
+        created: "2023-11-30"
+        updated: "2023-11-30"
+        ownerId: "637d1f77a3f48a003b2c28b2"
+
+paths:
+  /flats/getAllFlats:
+    get:
+      summary: Obtener todos los flats
+      tags: [Flats]
+      responses:
+        200:
+          description: Lista de flats obtenida exitosamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Flat"
+
+  /flats/getFlatById/{id}:
+    get:
+      summary: Obtener un flat por ID
+      tags: [Flats]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del flat
+          schema:
+            type: string
+      responses:
+        200:
+          description: Flat obtenido exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Flat"
+        404:
+          description: Flat no encontrado
+
+  /flats/addFlat:
+    post:
+    securityDefinitions:
+  bearerAuth:
+    type: apiKey
+    name: Authorization
+    in: header
+      summary: Crear un nuevo flat
+      tags: [Flats]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Flat"
+      responses:
+        201:
+          description: Flat creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Flat"
+        400:
+          description: Error en la solicitud
+
+  /flats/updateFlat/{id}:
+    patch:
+      summary: Actualizar un flat existente
+      tags: [Flats]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del flat
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Flat"
+      responses:
+        200:
+          description: Flat actualizado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Flat"
+        404:
+          description: Flat no encontrado
+        400:
+          description: Error en la solicitud
+
+  /flats/deletedFlat/{id}:
+    delete:
+      summary: Eliminar un flat
+      tags: [Flats]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del flat
+          schema:
+            type: string
+      responses:
+        200:
+          description: Flat eliminado exitosamente
+        404:
+          description: Flat no encontrado
