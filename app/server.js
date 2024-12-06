@@ -16,11 +16,21 @@ import authRoutes from "./routes/auth.router.js";
 import messageRoutes from "./routes/message.router.js";
 import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./swaggerConfig.js";
+import cors from "cors";
 
 const app = express();
 
 // Middleware para procesar JSON
 app.use(express.json());
+app.use(cors());
+
+/*app.use(
+  cors({
+    origin: "http://localhost:5173", // Origen de tu frontend
+    methods: ["GET", "POST", "PUT", "DELETE"], // Métodos permitidos
+    allowedHeaders: ["Content-Type", "Authorization"], // Encabezados permitidos
+  })
+);*/
 
 // Montar la interfaz de Swagger
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
