@@ -7,22 +7,39 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    unique: true,
+    unique: true, // No permite duplicados
+    match: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, // Formato de correo
   },
   password: {
     type: String,
     required: true,
+    minlength: 8,
+    match: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/, // Al menos una mayúscula, minúscula, número y carácter especial
   },
   firstname: {
     type: String,
     required: true,
+    minlength: 1,
+    maxlength: 20,
+    match: /^[a-zA-Z]+$/, // Solo letras
   },
   lastname: {
     type: String,
     required: true,
+    minlength: 1,
+    maxlength: 20,
+    match: /^[a-zA-Z]+$/, // Solo letras
   },
   birthdate: {
     type: Date,
+    required: true,
+    validate: {
+      validator: function (value) {
+        const age = new Date().getFullYear() - new Date(value).getFullYear();
+        return age >= 18; // Verifica si tiene al menos 18 años
+      },
+      message: "Debes tener al menos 18 años.",
+    },
   },
   isAdmin: {
     type: Boolean,
