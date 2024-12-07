@@ -1,5 +1,25 @@
 import { User } from "../models/user.model.js";
 
+const emailVerication = async (req, res) => {
+  try {
+    const { email } = req.query;
+
+    if (!email) {
+      return res.status(400).json({ message: "El correo es obligatorio." });
+    }
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "El correo ya está registrado." });
+    }
+    res.status(200).json({ message: "Correo disponible." });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error del servidor.", error: error.message });
+  }
+};
+
 const saveUser = async (req, res) => {
   try {
     const { firstname, lastname, email, password, birthdate } = req.body;
@@ -140,4 +160,11 @@ const deleteUser = async (req, res) => {
   }
 };
 
-export { saveUser, getAllUsers, getUserById, updateUser, deleteUser };
+export {
+  saveUser,
+  getAllUsers,
+  getUserById,
+  updateUser,
+  deleteUser,
+  emailVerication,
+};

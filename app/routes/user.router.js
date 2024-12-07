@@ -4,6 +4,7 @@ import {
   getUserById,
   updateUser,
   deleteUser,
+  emailVerication,
 } from "../controllers/user.controller.js";
 import authenticationMiddleware from "../middlewares/authentication.middleware.js";
 import validateUserOrAdmin from "../middlewares/accountownerMiddleware.js";
@@ -174,5 +175,6 @@ router.delete(
   validateUserOrAdmin,
   deleteUser
 );
+router.get("/check-email", emailVerication);
 
 export default router;
