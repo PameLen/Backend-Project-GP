@@ -1,4 +1,5 @@
 import { User } from "../models/user.model.js";
+import bcrypt from "bcrypt";
 
 const emailVerication = async (req, res) => {
   try {
@@ -129,7 +130,87 @@ const getUserById = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+//controlador para actualzar un usuario
+const updateUser = async (req, res) => {
+  try {
+    const { firstname, lastname, birthdate, password } = req.body;
 
+    // Validaciones
+    const nameRegex = /^[a-zA-Z]{1,20}$/;
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+
+    // Validar firstname
+    if (firstname && !nameRegex.test(firstname)) {
+      return res.status(400).json({
+        message: "El nombre debe tener solo letras y máximo 20 caracteres.",
+      });
+    }
+
+    // Validar lastname
+    if (lastname && !nameRegex.test(lastname)) {
+      return res.status(400).json({
+        message: "El apellido debe tener solo letras y máximo 20 caracteres.",
+      });
+    }
+
+    // Validar birthdate
+    if (birthdate) {
+      const birthDateObj = new Date(birthdate);
+      const today = new Date();
+      const age = today.getFullYear() - birthDateObj.getFullYear();
+      const monthDiff = today.getMonth() - birthDateObj.getMonth();
+
+      if (
+        monthDiff < 0 ||
+        (monthDiff === 0 && today.getDate() < birthDateObj.getDate())
+      ) {
+        age--;
+      }
+
+      if (age < 18) {
+        return res
+          .status(400)
+          .json({ message: "El usuario debe tener al menos 18 años." });
+      }
+    }
+
+    // Validar password
+    let updatedPassword = null;
+    if (password) {
+      if (!passwordRegex.test(password)) {
+        return res.status(400).json({
+          message:
+            "La contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula, una minúscula, un número y un carácter especial.",
+        });
+      }
+
+      // Hashear el password
+      const salt = await bcrypt.genSalt(10);
+      updatedPassword = await bcrypt.hash(password, salt);
+    }
+
+    // Actualizar el usuario
+    const updateData = {
+      ...req.body,
+      ...(updatedPassword && { password: updatedPassword }),
+    };
+
+    const user = await User.findByIdAndUpdate(req.params.id, updateData, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+/*
 const updateUser = async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(req.params.id, req.body, {
@@ -143,8 +224,8 @@ const updateUser = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-};
-
+};*/
+/*
 const deleteUser = async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(req.params.id, {
@@ -157,6 +238,21 @@ const deleteUser = async (req, res) => {
     res.json({ message: "Usuario emininado" });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+*/
+const deleteUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id); // Buscar el usuario por ID
+    if (!user) {
+      // Si no se encuentra el usuario, devolver una respuesta de error
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    await User.findByIdAndDelete(req.params.id); // Eliminar el usuario
+    res.json({ message: "Usuario eliminado correctamente" }); // Responder con éxito
+  } catch (error) {
+    res.status(500).json({ message: error.message }); // Manejar errores
   }
 };
 
