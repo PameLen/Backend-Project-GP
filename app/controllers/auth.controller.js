@@ -18,12 +18,10 @@ const register = async (req, res) => {
     // Validar firstname y lastname
     const nameRegex = /^[a-zA-Z]{1,20}$/;
     if (!nameRegex.test(firstname) || !nameRegex.test(lastname)) {
-      return res
-        .status(400)
-        .json({
-          message:
-            "El nombre y apellido deben tener entre 1 y 20 caracteres, solo letras.",
-        });
+      return res.status(400).json({
+        message:
+          "El nombre y apellido deben tener entre 1 y 20 caracteres, solo letras.",
+      });
     }
 
     // Validar formato de correo electrónico
@@ -108,7 +106,7 @@ const login = async (req, res) => {
     //5.- Si las contraseñas coinciden, vamos a generar un token JWT y lo vamos a retornar en la respuesta
 
     const token = await jwt.sign(
-      { user_id: user._id, isAdmin: user.isAdmin },
+      { user_id: user._id, firstname: user.firstname, isAdmin: user.isAdmin },
       config.JWT_SECRET,
       {
         expiresIn: "1h",
@@ -116,7 +114,7 @@ const login = async (req, res) => {
     );
     //console.log("Generated JWT Token:", token);
 
-    res.status(200).json({ token });
+    res.status(200).json({ token, firstname: user.firstname });
   } catch (error) {
     //console.error("Error during login:", error.message);
     res.status(500).json({ message: error.message });
