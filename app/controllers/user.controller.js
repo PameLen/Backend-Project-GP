@@ -138,7 +138,7 @@ const updateUser = async (req, res) => {
     // Validaciones
     const nameRegex = /^[a-zA-Z]{1,20}$/;
     const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*.,])[A-Za-z\d!@#$%^&*.,]{8,}$/;
 
     // Validar firstname
     if (firstname && !nameRegex.test(firstname)) {
@@ -158,7 +158,7 @@ const updateUser = async (req, res) => {
     if (birthdate) {
       const birthDateObj = new Date(birthdate);
       const today = new Date();
-      let age = today.getFullYear() - birthDateObj.getFullYear();
+      const age = today.getFullYear() - birthDateObj.getFullYear();
       const monthDiff = today.getMonth() - birthDateObj.getMonth();
 
       if (
@@ -175,8 +175,8 @@ const updateUser = async (req, res) => {
       }
     }
 
-    // Validar password
-    let updatedPassword = null; // Cambiado de const a let
+    // Validar password solo si se proporciona
+    let updatedPassword = null;
     if (password) {
       if (!passwordRegex.test(password)) {
         return res.status(400).json({
@@ -190,10 +190,12 @@ const updateUser = async (req, res) => {
       updatedPassword = await bcrypt.hash(password, salt);
     }
 
-    // Actualizar el usuario
+    // Preparar los datos a actualizar
     const updateData = {
-      ...req.body,
-      ...(updatedPassword && { password: updatedPassword }), // Solo incluye la contraseña si fue actualizada
+      ...(firstname && { firstname }),
+      ...(lastname && { lastname }),
+      ...(birthdate && { birthdate }),
+      ...(updatedPassword && { password: updatedPassword }),
     };
 
     const user = await User.findByIdAndUpdate(req.params.id, updateData, {
@@ -211,37 +213,7 @@ const updateUser = async (req, res) => {
   }
 };
 
-/*
-const updateUser = async (req, res) => {
-  try {
-    const user = await User.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
-    if (!user) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
-    }
-    res.json(user);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};*/
-/*
-const deleteUser = async (req, res) => {
-  try {
-    const user = await User.findByIdAndDelete(req.params.id, {
-      deletedAt: Date.now(),
-    });
-    res.json(user);
-    if (!user) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
-    }
-    res.json({ message: "Usuario emininado" });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-*/
+//controlador para eliminar un usuario
 const deleteUser = async (req, res) => {
   try {
     const user = await User.findById(req.params.id); // Buscar el usuario por ID
