@@ -12,23 +12,43 @@ import { connectDB } from "./db/db.js";
 import config from "./configs/config.js";
 import flatsRoutes from "./routes/flat.router.js";
 import usersRoutes from "./routes/user.router.js";
-
 import authRoutes from "./routes/auth.router.js";
+import messageRoutes from "./routes/message.router.js";
+import swaggerUi from "swagger-ui-express";
+import swaggerSpec from "./swaggerConfig.js";
+import cors from "cors";
 
 const app = express();
 
-//middleware para procesar json
+// Middleware para procesar JSON
 app.use(express.json());
+app.use(cors());
 
+/*app.use(
+  cors({
+    origin: "http://localhost:5173", // Origen de tu frontend
+    methods: ["GET", "POST", "PUT", "DELETE"], // Métodos permitidos
+    allowedHeaders: ["Content-Type", "Authorization"], // Encabezados permitidos
+  })
+);*/
+
+// Montar la interfaz de Swagger
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// Conectar a la base de datos
 connectDB();
 
-//EndPoints para servicios register y login
+// EndPoints para servicios register y login
 app.use("/users", authRoutes);
-//EndPoint para servicios users
+// EndPoint para servicios users
 app.use("/users", usersRoutes);
-//EndPoint para servicios flats
+// EndPoint para servicios flats
 app.use("/flats", flatsRoutes);
+// EndPoint para mensajes
+app.use("/flats", messageRoutes);
 
+// Iniciar el servidor
 app.listen(config.PORT, () => {
-  console.log(`Servidor iniciado en el puerto ${config.PORT} `);
+  console.log(`Servidor iniciado en el puerto ${config.PORT}`);
+  console.log(`Documentación en http://localhost:${config.PORT}/api-docs`);
 });
