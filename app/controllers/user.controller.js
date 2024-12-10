@@ -158,7 +158,7 @@ const updateUser = async (req, res) => {
     if (birthdate) {
       const birthDateObj = new Date(birthdate);
       const today = new Date();
-      const age = today.getFullYear() - birthDateObj.getFullYear();
+      let age = today.getFullYear() - birthDateObj.getFullYear();
       const monthDiff = today.getMonth() - birthDateObj.getMonth();
 
       if (
@@ -176,7 +176,7 @@ const updateUser = async (req, res) => {
     }
 
     // Validar password
-    let updatedPassword = null;
+    let updatedPassword = null; // Cambiado de const a let
     if (password) {
       if (!passwordRegex.test(password)) {
         return res.status(400).json({
@@ -193,7 +193,7 @@ const updateUser = async (req, res) => {
     // Actualizar el usuario
     const updateData = {
       ...req.body,
-      ...(updatedPassword && { password: updatedPassword }),
+      ...(updatedPassword && { password: updatedPassword }), // Solo incluye la contraseña si fue actualizada
     };
 
     const user = await User.findByIdAndUpdate(req.params.id, updateData, {
@@ -210,6 +210,7 @@ const updateUser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 /*
 const updateUser = async (req, res) => {
   try {
