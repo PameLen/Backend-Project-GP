@@ -117,7 +117,7 @@ const getAllUsers = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
+/*
 const getUserById = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
@@ -129,7 +129,26 @@ const getUserById = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+};*/
+const getUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (user) {
+      // Asegurarse de que `favouriteFlats` siempre sea un array
+      const userData = {
+        ...user.toObject(), // Convierte el documento de Mongoose a un objeto plano
+        favouritesFlats: user.favouritesFlats || [], // Si no existe, inicializa como un array vacío
+      };
+      res.status(200).json(userData);
+    } else {
+      res.status(404).json({ message: "Usuario no encontrado" });
+    }
+  } catch (error) {
+    console.error("Error al obtener el usuario:", error);
+    res.status(500).json({ message: "Error al obtener el usuario." });
+  }
 };
+
 //controlador para actualzar un usuario
 const updateUser = async (req, res) => {
   try {
@@ -138,7 +157,7 @@ const updateUser = async (req, res) => {
     // Validaciones
     const nameRegex = /^[a-zA-Z]{1,20}$/;
     const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*.,])[A-Za-z\d!@#$%^&*.,]{8,}$/;
 
     // Validar firstname
     if (firstname && !nameRegex.test(firstname)) {
@@ -175,7 +194,7 @@ const updateUser = async (req, res) => {
       }
     }
 
-    // Validar password
+    // Validar password solo si se proporciona
     let updatedPassword = null;
     if (password) {
       if (!passwordRegex.test(password)) {
@@ -190,9 +209,11 @@ const updateUser = async (req, res) => {
       updatedPassword = await bcrypt.hash(password, salt);
     }
 
-    // Actualizar el usuario
+    // Preparar los datos a actualizar
     const updateData = {
-      ...req.body,
+      ...(firstname && { firstname }),
+      ...(lastname && { lastname }),
+      ...(birthdate && { birthdate }),
       ...(updatedPassword && { password: updatedPassword }),
     };
 
@@ -210,37 +231,8 @@ const updateUser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-/*
-const updateUser = async (req, res) => {
-  try {
-    const user = await User.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
-    if (!user) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
-    }
-    res.json(user);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};*/
-/*
-const deleteUser = async (req, res) => {
-  try {
-    const user = await User.findByIdAndDelete(req.params.id, {
-      deletedAt: Date.now(),
-    });
-    res.json(user);
-    if (!user) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
-    }
-    res.json({ message: "Usuario emininado" });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-*/
+
+//controlador para eliminar un usuario
 const deleteUser = async (req, res) => {
   try {
     const user = await User.findById(req.params.id); // Buscar el usuario por ID
@@ -256,6 +248,51 @@ const deleteUser = async (req, res) => {
   }
 };
 
+//controlador para agregar flats favoritos a un usuario
+
+// Controlador para agregar un flat a favoritos
+const addFavouriteFlat = async (req, res) => {
+  try {
+    const { flatId } = req.body; // Obtener el ID del flat desde el cuerpo de la solicitud
+    const userId = req.user.user_id; // Obtener el ID del usuario desde el token decodificado (middleware de autenticación)
+
+    // Validar que el flatId está presente
+    if (!flatId) {
+      return res
+        .status(400)
+        .json({ message: "El ID del flat es obligatorio." });
+    }
+
+    // Buscar al usuario
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado." });
+    }
+
+    // Verificar si el flat ya está en favoritos
+    if (user.favouritesFlats.includes(flatId)) {
+      return res
+        .status(400)
+        .json({ message: "El flat ya está marcado como favorito." });
+    }
+
+    // Agregar el flat a la lista de favoritos
+    user.favouritesFlats.push(flatId);
+    await user.save();
+
+    return res.status(200).json({
+      message: "Flat agregado a favoritos exitosamente.",
+      favouritesFlats: user.favouritesFlats,
+    });
+  } catch (error) {
+    console.error("Error al agregar flat a favoritos:", error);
+    return res
+      .status(500)
+      .json({ message: "Error al agregar flat a favoritos." });
+  }
+};
+
 export {
   saveUser,
   getAllUsers,
@@ -263,4 +300,5 @@ export {
   updateUser,
   deleteUser,
   emailVerication,
+  addFavouriteFlat,
 };
