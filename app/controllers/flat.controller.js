@@ -4,8 +4,18 @@ import { User } from "../models/user.model.js";
 //controllador para obtner todos los flats
 const getAllFlats = async (req, res) => {
   try {
+    const userId = req.user.user_id; // Asegúrate de obtener el user_id del token
     const flats = await Flat.find();
-    res.json(flats);
+
+    const flatsWithFavouriteStatus = flats.map((flat) => ({
+      ...flat.toObject(),
+      isFavourite: flat.users.some(
+        (userEntry) => userEntry.flat.toString() === userId
+      ),
+    }));
+
+    // res.json(flats);
+    res.status(200).json(flatsWithFavouriteStatus);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
