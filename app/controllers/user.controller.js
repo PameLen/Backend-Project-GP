@@ -118,19 +118,7 @@ const getAllUsers = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-/*
-const getUserById = async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id);
-    if (user) {
-      res.status(200).json(user);
-    } else {
-      res.status(404).json({ message: "Usuario no encontrado" });
-    }
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};*/
+//controlador para consultar un usuario por id
 const getUserById = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
@@ -250,94 +238,6 @@ const deleteUser = async (req, res) => {
 };
 
 //controlador para agregar flats favoritos a un usuario
-
-// Controlador para agregar un flat a favoritos
-/*const addFavouriteFlat = async (req, res) => {
-  try {
-    const { flatId } = req.body; // Obtener el ID del flat desde el cuerpo de la solicitud
-    const userId = req.user.user_id; // Obtener el ID del usuario desde el token decodificado (middleware de autenticación)
-
-    // Validar que el flatId está presente
-    if (!flatId) {
-      return res
-        .status(400)
-        .json({ message: "El ID del flat es obligatorio." });
-    }
-
-    // Buscar al usuario
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(404).json({ message: "Usuario no encontrado." });
-    }
-
-    // Verificar si el flat ya está en favoritos
-    if (user.favouritesFlats.includes(flatId)) {
-      return res
-        .status(400)
-        .json({ message: "El flat ya está marcado como favorito." });
-    }
-
-    // Agregar el flat a la lista de favoritos
-    user.favouritesFlats.push(flatId);
-    await user.save();
-
-    return res.status(200).json({
-      message: "Flat agregado a favoritos exitosamente.",
-      favouritesFlats: user.favouritesFlats,
-    });
-  } catch (error) {
-    console.error("Error al agregar flat a favoritos:", error);
-    return res
-      .status(500)
-      .json({ message: "Error al agregar flat a favoritos." });
-  }
-};*/
-/*
-const addFavouriteFlat = async (req, res) => {
-  try {
-    const { flatId } = req.body;
-    const userId = req.user.id; // Extraído del token
-
-    // Verificar si el flat existe
-    const flat = await Flat.findById(flatId);
-    if (!flat) {
-      return res.status(404).json({ message: "Flat no encontrado" });
-    }
-
-    // Verificar si el usuario ya está en la lista de favoritos del flat
-    if (flat.users && flat.users.includes(userId)) {
-      return res
-        .status(400)
-        .json({ message: "Este flat ya está en favoritos" });
-    }
-
-    // Agregar el usuario al array `users` del flat
-    flat.users = flat.users || []; // Asegurar que el array exista
-    flat.users.push(userId);
-    await flat.save();
-
-    // Agregar el flat al array `favouritesFlats` del usuario
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
-    }
-    user.favouritesFlats = user.favouritesFlats || []; // Asegurar que el array exista
-    if (!user.favouritesFlats.includes(flatId)) {
-      user.favouritesFlats.push(flatId);
-      await user.save();
-    }
-
-    res.status(200).json({
-      message: "Flat agregado a favoritos",
-      flat: flat.toObject(),
-      user: user.toObject(),
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error al agregar el flat a favoritos" });
-  }
-};*/
 const addFavouriteFlat = async (req, res) => {
   try {
     const { flatId } = req.body; // Obtener el ID del flat desde el cuerpo de la solicitud
@@ -399,6 +299,61 @@ const addFavouriteFlat = async (req, res) => {
   }
 };
 
+const removeFavouriteFlat = async (req, res) => {
+  try {
+    const { flatId } = req.body; // Obtener el ID del flat desde el cuerpo de la solicitud
+    const userId = req.user.user_id; // ID del usuario autenticado
+
+    // Validar que el flatId está presente
+    if (!flatId) {
+      return res
+        .status(400)
+        .json({ message: "El ID del flat es obligatorio." });
+    }
+
+    // Buscar el flat
+    const flat = await Flat.findById(flatId);
+    if (!flat) {
+      return res.status(404).json({ message: "Flat no encontrado." });
+    }
+
+    // Buscar al usuario
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado." });
+    }
+
+    // Verificar si el flat está en favoritos del usuario
+    if (!user.favouritesFlats.includes(flatId)) {
+      return res.status(400).json({
+        message: "El flat no está en los favoritos del usuario.",
+      });
+    }
+
+    // Eliminar el flat del array `favouritesFlats` del usuario
+    user.favouritesFlats = user.favouritesFlats.filter(
+      (favourite) => favourite.toString() !== flatId
+    );
+    await user.save();
+
+    // Eliminar al usuario del array `users` del flat
+    flat.users = flat.users.filter(
+      (userEntry) => userEntry.flat.toString() !== userId
+    );
+    await flat.save();
+
+    return res.status(200).json({
+      message: "Flat eliminado de favoritos exitosamente.",
+      favouritesFlats: user.favouritesFlats,
+    });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Error al eliminar el flat de favoritos." });
+  }
+};
+
 export {
   saveUser,
   getAllUsers,
@@ -407,4 +362,5 @@ export {
   deleteUser,
   emailVerication,
   addFavouriteFlat,
+  removeFavouriteFlat,
 };
