@@ -1,4 +1,5 @@
 import { User } from "../models/user.model.js";
+import { Flat } from "../models/flat.model.js";
 import bcrypt from "bcrypt";
 
 const emailVerication = async (req, res) => {
@@ -117,19 +118,26 @@ const getAllUsers = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
+//controlador para consultar un usuario por id
 const getUserById = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     if (user) {
-      res.status(200).json(user);
+      // Asegurarse de que `favouriteFlats` siempre sea un array
+      const userData = {
+        ...user.toObject(), // Convierte el documento de Mongoose a un objeto plano
+        favouritesFlats: user.favouritesFlats || [], // Si no existe, inicializa como un array vacío
+      };
+      res.status(200).json(userData);
     } else {
       res.status(404).json({ message: "Usuario no encontrado" });
     }
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Error al obtener el usuario:", error);
+    res.status(500).json({ message: "Error al obtener el usuario." });
   }
 };
+
 //controlador para actualzar un usuario
 const updateUser = async (req, res) => {
   try {
@@ -229,6 +237,123 @@ const deleteUser = async (req, res) => {
   }
 };
 
+//controlador para agregar flats favoritos a un usuario
+const addFavouriteFlat = async (req, res) => {
+  try {
+    const { flatId } = req.body; // Obtener el ID del flat desde el cuerpo de la solicitud
+    const userId = req.user.user_id; // ID del usuario autenticado
+
+    // Validar que el flatId está presente
+    if (!flatId) {
+      return res
+        .status(400)
+        .json({ message: "El ID del flat es obligatorio." });
+    }
+
+    // Buscar el flat
+    const flat = await Flat.findById(flatId);
+    if (!flat) {
+      return res.status(404).json({ message: "Flat no encontrado." });
+    }
+
+    // Buscar al usuario
+    const user = await User.findById(userId);
+    if (!user) {
+      console.log("Usuario no encontrado:", userId);
+      return res.status(404).json({ message: "Usuario no encontrado." });
+    }
+
+    // Verificar si el flat ya está en favoritos del usuario
+    if (user.favouritesFlats.includes(flatId)) {
+      return res.status(400).json({
+        message: "Este flat ya está en favoritos del usuario.",
+      });
+    }
+
+    // Verificar si el usuario ya está en la lista de usuarios del flat
+    const userExistsInFlat = flat.users.some(
+      (userEntry) => userEntry.flat.toString() === userId
+    );
+    if (userExistsInFlat) {
+      return res.status(400).json({
+        message: "El usuario ya está asociado a este flat.",
+      });
+    }
+
+    // Agregar el flat al array `favouritesFlats` del usuario
+    user.favouritesFlats.push(flatId);
+    await user.save();
+
+    // Agregar el usuario al array `users` del flat
+    flat.users.push({ flat: userId });
+    await flat.save();
+
+    return res.status(200).json({
+      message: "Flat agregado a favoritos exitosamente.",
+      favouritesFlats: user.favouritesFlats,
+      flatUsers: flat.users,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error al agregar el flat a favoritos." });
+  }
+};
+
+const removeFavouriteFlat = async (req, res) => {
+  try {
+    const { flatId } = req.body; // Obtener el ID del flat desde el cuerpo de la solicitud
+    const userId = req.user.user_id; // ID del usuario autenticado
+
+    // Validar que el flatId está presente
+    if (!flatId) {
+      return res
+        .status(400)
+        .json({ message: "El ID del flat es obligatorio." });
+    }
+
+    // Buscar el flat
+    const flat = await Flat.findById(flatId);
+    if (!flat) {
+      return res.status(404).json({ message: "Flat no encontrado." });
+    }
+
+    // Buscar al usuario
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado." });
+    }
+
+    // Verificar si el flat está en favoritos del usuario
+    if (!user.favouritesFlats.includes(flatId)) {
+      return res.status(400).json({
+        message: "El flat no está en los favoritos del usuario.",
+      });
+    }
+
+    // Eliminar el flat del array `favouritesFlats` del usuario
+    user.favouritesFlats = user.favouritesFlats.filter(
+      (favourite) => favourite.toString() !== flatId
+    );
+    await user.save();
+
+    // Eliminar al usuario del array `users` del flat
+    flat.users = flat.users.filter(
+      (userEntry) => userEntry.flat.toString() !== userId
+    );
+    await flat.save();
+
+    return res.status(200).json({
+      message: "Flat eliminado de favoritos exitosamente.",
+      favouritesFlats: user.favouritesFlats,
+    });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Error al eliminar el flat de favoritos." });
+  }
+};
+
 export {
   saveUser,
   getAllUsers,
@@ -236,4 +361,6 @@ export {
   updateUser,
   deleteUser,
   emailVerication,
+  addFavouriteFlat,
+  removeFavouriteFlat,
 };

@@ -185,7 +185,7 @@ import authenticationMiddleware from "../middlewares/authentication.middleware.j
  */
 
 const router = express.Router();
-router.get("/getAllFlats", getAllFlats);
+router.get("/getAllFlats", authenticationMiddleware, getAllFlats);
 router.post("/addFlat", authenticationMiddleware, addFlat);
 router.patch("/updateFlat/:id", authenticationMiddleware, updateFlat);
 router.get("/getFlatById/:id", getFlatById);
