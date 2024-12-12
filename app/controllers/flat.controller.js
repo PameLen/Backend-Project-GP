@@ -1,4 +1,5 @@
 import { Flat } from "../models/flat.model.js";
+import { User } from "../models/user.model.js";
 
 //controllador para obtner todos los flats
 const getAllFlats = async (req, res) => {
