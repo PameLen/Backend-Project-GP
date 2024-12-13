@@ -6,6 +6,7 @@ import {
   deleteUser,
   emailVerication,
   addFavouriteFlat,
+  removeFavouriteFlat,
 } from "../controllers/user.controller.js";
 import authenticationMiddleware from "../middlewares/authentication.middleware.js";
 import validateUserOrAdmin from "../middlewares/accountownerMiddleware.js";
@@ -179,5 +180,6 @@ router.delete(
 router.get("/check-email", emailVerication);
 
 router.patch("/addFavourite", authenticationMiddleware, addFavouriteFlat);
+router.patch("/removeFavourite", authenticationMiddleware, removeFavouriteFlat);
 
 export default router;
