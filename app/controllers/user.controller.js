@@ -164,10 +164,10 @@ const updateUser = async (req, res) => {
 
     // Validar birthdate
     if (birthdate) {
-      const birthDateObj = new Date(birthdate);
-      const today = new Date();
-      const age = today.getFullYear() - birthDateObj.getFullYear();
-      const monthDiff = today.getMonth() - birthDateObj.getMonth();
+      let birthDateObj = new Date(birthdate);
+      let today = new Date();
+      let age = today.getFullYear() - birthDateObj.getFullYear();
+      let monthDiff = today.getMonth() - birthDateObj.getMonth();
 
       if (
         monthDiff < 0 ||
