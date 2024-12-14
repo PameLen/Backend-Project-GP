@@ -141,7 +141,7 @@ const getUserById = async (req, res) => {
 //controlador para actualzar un usuario
 const updateUser = async (req, res) => {
   try {
-    const { firstname, lastname, birthdate, password } = req.body;
+    const { firstname, lastname, birthdate, isAdmin, password } = req.body;
 
     // Validaciones
     const nameRegex = /^[a-zA-Z]{1,20}$/;
@@ -203,6 +203,7 @@ const updateUser = async (req, res) => {
       ...(firstname && { firstname }),
       ...(lastname && { lastname }),
       ...(birthdate && { birthdate }),
+      ...(isAdmin && { isAdmin }),
       ...(updatedPassword && { password: updatedPassword }),
     };
 
