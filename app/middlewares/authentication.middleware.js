@@ -16,10 +16,10 @@ const authenticationMiddleware = (req, res, next) => {
   try {
     //Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjcxMmJkYzE5ZDk3OGE1M2U3MDMyMTc3Iiwicm9sZSI6InVzZXIiLCJpYXQiOjE3MjkyOTE5ODksImV4cCI6MTcyOTI5NTU4OX0.wYhHJMst7wElZpa8S06HQIq4IkMEwFz6BcWDSm3Eyao
     const token = authHeader.split(" ")[1]; // ["Bearer", "eyJh...."]
-    console.log(token);
+    // console.log(token);
     //Validarlo y decodificarlo
     const decoded = jwt.verify(token, config.JWT_SECRET);
-    console.log(decoded);
+    //console.log(decoded);
     //Modificar o agregar un atributo al request
     req.user = decoded;
     next();

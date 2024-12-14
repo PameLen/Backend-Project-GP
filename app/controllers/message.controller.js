@@ -1,40 +1,8 @@
 import { Message } from "../models/message.model.js";
 import { Flat } from "../models/flat.model.js";
 import { User } from "../models/user.model.js";
+
 //Controlador para consultar los mensajes de un user, se valida con el token id del login solo si es igual a senderId
-/*
-const getUserMessages = async (req, res) => {
-  try {
-    // Obtener el ID del flat y el senderId de los parámetros de la ruta
-    const { id: flatId, senderId } = req.params;
-
-    // Obtener el ID del usuario logueado desde el token
-    const loggedUserId = req.user.user_id;
-
-    // Validar que el senderId coincida con el ID del usuario logueado
-    if (senderId !== loggedUserId) {
-      return res.status(403).json({
-        message: "Acceso denegado: No puedes ver mensajes de otro usuario.",
-      });
-    }
-
-    // Buscar el flat y validar si existe
-    const flat = await Flat.findById(flatId).populate("messages");
-    if (!flat) {
-      return res.status(404).json({ message: "Flat no encontrado." });
-    }
-
-    // Filtrar los mensajes que coincidan con el senderId
-    const userMessages = flat.messages.filter(
-      (message) => message.senderId.toString() === senderId
-    );
-
-    // Responder con los mensajes del usuario
-    res.status(200).json(userMessages);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};*/
 const getUserMessages = async (req, res) => {
   try {
     // Obtener el ID del flat y el senderId de los parámetros de la ruta
@@ -120,7 +88,7 @@ const getAllMessages = async (req, res) => {
         streetNumber: message.flatId?.streetNumber,
       },
       content: message.content,
-      createdAt: message.createdAt,
+      created: message.created,
     }));
 
     // Enviar la respuesta

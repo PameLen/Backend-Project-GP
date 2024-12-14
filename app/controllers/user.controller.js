@@ -141,7 +141,7 @@ const getUserById = async (req, res) => {
 //controlador para actualzar un usuario
 const updateUser = async (req, res) => {
   try {
-    const { firstname, lastname, birthdate, password } = req.body;
+    const { firstname, lastname, birthdate, isAdmin, password } = req.body;
 
     // Validaciones
     const nameRegex = /^[a-zA-Z]{1,20}$/;
@@ -164,10 +164,10 @@ const updateUser = async (req, res) => {
 
     // Validar birthdate
     if (birthdate) {
-      const birthDateObj = new Date(birthdate);
-      const today = new Date();
-      const age = today.getFullYear() - birthDateObj.getFullYear();
-      const monthDiff = today.getMonth() - birthDateObj.getMonth();
+      let birthDateObj = new Date(birthdate);
+      let today = new Date();
+      let age = today.getFullYear() - birthDateObj.getFullYear();
+      let monthDiff = today.getMonth() - birthDateObj.getMonth();
 
       if (
         monthDiff < 0 ||
@@ -203,6 +203,7 @@ const updateUser = async (req, res) => {
       ...(firstname && { firstname }),
       ...(lastname && { lastname }),
       ...(birthdate && { birthdate }),
+      ...(isAdmin && { isAdmin }),
       ...(updatedPassword && { password: updatedPassword }),
     };
 
