@@ -61,6 +61,12 @@ const userSchema = new mongoose.Schema({
       ref: "Flat",
     },
   ],
+  FlatsList: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Flat",
+    },
+  ],
 });
 
 //El proyecto dice que hagan un borrado fisico, es recomedable hacer un borrado logico

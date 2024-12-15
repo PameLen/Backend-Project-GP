@@ -20,7 +20,7 @@ const getAllFlats = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
+/*
 //controllador para que el propietaro cree un nuevo flats
 const addFlat = async (req, res) => {
   try {
@@ -39,6 +39,37 @@ const addFlat = async (req, res) => {
 
     await flat.save(); // Guardamos el flat en la base de datos
     res.status(201).send(flat); // Enviamos la respuesta al cliente
+  } catch (error) {
+    res.status(400).send({ message: error.message });
+  }
+};*/
+const addFlat = async (req, res) => {
+  try {
+    // Obtenemos el ID del propietario del token (rellenado por el middleware de autenticación)
+    const ownerId = req.user?.user_id;
+
+    if (!ownerId) {
+      return res.status(401).send({ message: "User not authenticated" });
+    }
+
+    // Creamos un nuevo flat con el campo ownerId incluido
+    const flat = new Flat({
+      ...req.body, // Los datos enviados en el cuerpo de la solicitud
+      ownerId, // El ID del propietario obtenido del token
+    });
+
+    // Guardamos el flat en la base de datos
+    const savedFlat = await flat.save();
+
+    // Actualizamos el usuario agregando el ID del flat al array NumberFlats
+    await User.findByIdAndUpdate(
+      ownerId, // ID del usuario a actualizar
+      { $push: { FlatsList: savedFlat._id } }, // Agregar el ID del flat al array
+      { new: true, useFindAndModify: false } // Opciones: retornar el documento actualizado y evitar deprecaciones
+    );
+
+    // Enviamos la respuesta al cliente
+    res.status(201).send(savedFlat);
   } catch (error) {
     res.status(400).send({ message: error.message });
   }
