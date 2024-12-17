@@ -109,10 +109,32 @@ const saveUser = async (req, res) => {
       .json({ message: "Error del servidor.", error: error.message });
   }
 };
-
+// controlador para traer todos los datos de los usuarios
 const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find();
+    //aggregate es una función de Mongoose que permite realizar consultas más avanzada
+    const users = await User.aggregate([
+      {
+        //join en mongodb
+        $lookup: {
+          from: "flats", // Colección de flats
+          localField: "FlatsList", // Array en el esquema de User
+          foreignField: "_id", // Campo referenciado en Flat
+          as: "flats", // Nombre del resultado de unión
+        },
+      },
+      {
+        $addFields: {
+          numeroflats: { $size: "$flats" }, // Calcula la cantidad de flats
+        },
+      },
+      {
+        $project: {
+          flats: 0, // Excluye el array de flats (opcional)
+        },
+      },
+    ]);
+
     res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -203,7 +225,7 @@ const updateUser = async (req, res) => {
       ...(firstname && { firstname }),
       ...(lastname && { lastname }),
       ...(birthdate && { birthdate }),
-      ...(isAdmin && { isAdmin }),
+      ...(typeof isAdmin !== "undefined" && { isAdmin }),
       ...(updatedPassword && { password: updatedPassword }),
     };
 
