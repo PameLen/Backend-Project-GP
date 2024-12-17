@@ -225,7 +225,7 @@ const updateUser = async (req, res) => {
       ...(firstname && { firstname }),
       ...(lastname && { lastname }),
       ...(birthdate && { birthdate }),
-      ...(isAdmin && { isAdmin }),
+      ...(typeof isAdmin !== "undefined" && { isAdmin }),
       ...(updatedPassword && { password: updatedPassword }),
     };
 
